@@ -1,0 +1,13 @@
+name: event-mining-cobble
+version: '${project.version}'
+main: dev.slne.event.eventminingcobble.MiningCobbleEvent
+api-version: '1.20'
+authors: [twisti]
+description: All players have to mine 500k cobble
+
+dependencies:
+  server:
+    CommandAPI:
+      join-classpath: true
+      required: true
+      load: BEFORE
