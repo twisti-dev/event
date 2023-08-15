@@ -16,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class MiningCobbleEvent : JavaPlugin() {
     lateinit var scoreboardLibrary: ScoreboardLibrary
+    lateinit var scoreBoard: ScoreBoard
+        private set
 
     override fun onLoad() {
         instance = this
@@ -41,7 +43,7 @@ class MiningCobbleEvent : JavaPlugin() {
 
         Bukkit.getScheduler().runTask(this, Runnable {
             scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(this)
-            ScoreBoard(this)
+            scoreBoard = ScoreBoard(this)
         })
     }
 

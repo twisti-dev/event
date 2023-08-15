@@ -18,6 +18,8 @@ object MiningListener : Listener {
     fun onJoin(event: PlayerJoinEvent) {
         val player = event.player
         MiningPlayerManager.getMiningPlayer(player.uniqueId)
+
+        MiningCobbleEvent.instance.scoreBoard.addPlayer(player)
     }
 
     @EventHandler

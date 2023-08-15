@@ -23,7 +23,7 @@ object MessageManager {
     val INFO = TextColor.fromHexString("#40d1db")
     val DEBUG = TextColor.fromHexString("#a6c7e6")
 
-    val WHITE = TextColor.fromHexString("#f4f4f4")
+    val WHITE = TextColor.fromHexString("#f4f4f4")!!
     val BLACK = TextColor.fromHexString("#000000")
     val DARK_GRAY: TextColor = NamedTextColor.DARK_GRAY
     val GRAY: TextColor = NamedTextColor.GRAY

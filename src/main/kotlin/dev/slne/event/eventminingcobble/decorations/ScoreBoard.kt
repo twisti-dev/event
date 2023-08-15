@@ -7,20 +7,32 @@ import dev.slne.event.eventminingcobble.player.MiningPlayer
 import dev.slne.event.eventminingcobble.player.MiningPlayerManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.megavex.scoreboardlibrary.api.sidebar.Sidebar
 import net.megavex.scoreboardlibrary.api.sidebar.component.ComponentSidebarLayout
 import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent
+import net.megavex.scoreboardlibrary.api.sidebar.component.animation.CollectionSidebarAnimation
+import net.megavex.scoreboardlibrary.api.sidebar.component.animation.SidebarAnimation
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
+
 
 class ScoreBoard(
     plugin: MiningCobbleEvent,
     private val sidebar: Sidebar = plugin.scoreboardLibrary.createSidebar()
 ) {
     init {
-        sidebar.title(Component.text("Mining Cobble Event", MessageManager.PRIMARY))
+        val titleAnimation = Component.text("Mining Cobble Event").createGradientAnimation("#1488CC", "#2B32B2")
+        val title = SidebarComponent.animatedLine(titleAnimation)
+        val spaceLine = Component.text("--------------------")
+            .createGradientAnimation(MessageManager.WHITE.asHexString(), MessageManager.SPACER.asHexString())
 
         val lines = SidebarComponent.builder()
-            .addDynamicLine { Component.text("Zeit: ${remainingTime.invoke()}", MessageManager.INFO) }
+            .addBlankLine()
+            .addDynamicLine { Component.text("Verbleibende Zeit: ${remainingTime.invoke()}", MessageManager.INFO) }
+            .addBlankLine()
+            .addAnimatedLine(spaceLine)
             .addBlankLine()
             .addDynamicLine(getPlaceComponentSupplier(1))
             .addDynamicLine(getPlaceComponentSupplier(2))
@@ -30,18 +42,24 @@ class ScoreBoard(
             .build()
 
         val sidebarLayout = ComponentSidebarLayout(
-            SidebarComponent.dynamicLine { Component.text("Mining Cobble Event", MessageManager.PRIMARY) },
+            title,
             lines
         )
 
+        sidebar.addPlayers(Bukkit.getOnlinePlayers())
+
         Bukkit.getScheduler().runTaskTimer(plugin, Runnable {
+            titleAnimation.nextFrame()
+            spaceLine.nextFrame()
             sidebarLayout.apply(sidebar)
-            sidebar.addPlayers(Bukkit.getOnlinePlayers())
-        }, 0, 20)
+        }, 0, 5)
 
     }
 
-    private val remainingTime: () -> String = { (MiningManager.EVENT_TIME_IN_SECONDS - MiningManager.timeElapsed).secondsToString() }
+    companion object {
+        private val remainingTime: () -> String =
+            { (MiningManager.EVENT_TIME_IN_SECONDS - MiningManager.timeElapsed).secondsToString() }
+    }
 
     private fun getPlayerAtPlace(place: Int): MiningPlayer? {
         return MiningPlayerManager.getSortedMiningPlayers().getOrNull(place - 1)
@@ -57,6 +75,30 @@ class ScoreBoard(
             } ?: Component.empty()
         }
     }
+
+    fun addPlayer(player: Player) {
+        sidebar.addPlayer(player)
+    }
+}
+
+private fun Component.createGradientAnimation(firstHex: String, secondHex: String): SidebarAnimation<Component> {
+    val step = 1f / 20f
+    val textPlaceholder = Placeholder.component("text", this)
+    val frames = mutableListOf<Component>()
+
+    // Animation from left to right
+    var phase = -1f
+    while (phase < 1) {
+        frames.add(
+            MiniMessage.miniMessage().deserialize("<gradient:${firstHex}:${secondHex}:$phase><text>", textPlaceholder)
+        )
+        phase += step
+    }
+
+    // Animation from right to left
+    frames.addAll(frames.reversed())
+
+    return CollectionSidebarAnimation(frames)
 }
 
 fun Int.secondsToString(): String {
