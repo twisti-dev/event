@@ -4,43 +4,57 @@ import dev.slne.event.eventminingcobble.MiningCobbleEvent
 import dev.slne.event.eventminingcobble.bossbar.GlobalCobbleCountBossbar
 import dev.slne.event.eventminingcobble.listener.MiningListener
 import dev.slne.event.eventminingcobble.messages.MessageManager
+import dev.slne.event.eventminingcobble.player.MiningPlayerManager
 import org.bukkit.Bukkit
-import java.time.Duration
+import org.bukkit.event.HandlerList
 
 object MiningManager {
-    private var bossbar: GlobalCobbleCountBossbar? = null
+    private const val EVENT_TIME_IN_SECONDS: Short = 3_600
+    var bossbar: GlobalCobbleCountBossbar? = null
+    private val plugin = MiningCobbleEvent.instance
+    var running = false
 
-    private var running = false
     private var taskID = -1
+
+    var timeElapsed: Int = -1
 
     fun start() {
         if (running) return
 
         Bukkit.broadcast(MessageManager.startMessage())
-
         running = true
-        val plugin = MiningCobbleEvent.plugin
-
-        taskID = plugin.server.scheduler.runTaskLater(
-            plugin,
-            Runnable { stop() },
-            Duration.ofHours(1).toSeconds() * 20
-        ).taskId
+        startTask()
 
         plugin.server.pluginManager.registerEvents(MiningListener, plugin)
         bossbar = GlobalCobbleCountBossbar(plugin)
     }
 
+    fun startTask() {
+        taskID = plugin.server.scheduler.runTaskTimer(
+            plugin,
+            Runnable {
+                if (timeElapsed++ >= EVENT_TIME_IN_SECONDS) {
+                    stop()
+                }
+            },
+            0, 20
+        ).taskId
+    }
+
     fun stop() {
         if (!running) return
 
+        Bukkit.broadcast(MessageManager.stopMessage())
+
         running = false
-        val plugin = MiningCobbleEvent.plugin
+        val plugin = MiningCobbleEvent.instance
 
         plugin.server.scheduler.cancelTask(taskID)
-        plugin.server.pluginManager.registerEvents(MiningListener, plugin)
+        HandlerList.unregisterAll(MiningListener)
         bossbar?.stop()
+        bossbar = null
+        timeElapsed = -1
 
-        Bukkit.broadcast(MessageManager.stopMessage())
+        MiningPlayerManager.reset()
     }
 }

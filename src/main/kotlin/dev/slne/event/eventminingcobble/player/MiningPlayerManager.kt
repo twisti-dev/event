@@ -7,10 +7,10 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 object MiningPlayerManager {
-    private val miningPlayerCache: LoadingCache<UUID, MiningPlayer> = Caffeine.newBuilder()
+    val miningPlayerCache: LoadingCache<UUID, MiningPlayer> = Caffeine.newBuilder()
         .build { id -> MiningPlayer(id, Bukkit.getPlayer(id)!!.name) }
 
-    private val globalCobbleMined: AtomicInteger = AtomicInteger(0)
+    val globalCobbleMined: AtomicInteger = AtomicInteger(0)
 
     fun getMiningPlayer(uuid: UUID): MiningPlayer {
         return miningPlayerCache.get(uuid)
@@ -26,5 +26,10 @@ object MiningPlayerManager {
 
     fun getSortedMiningPlayers(): List<MiningPlayer> {
         return miningPlayerCache.asMap().values.sorted()
+    }
+
+    fun reset() {
+        globalCobbleMined.set(0)
+        miningPlayerCache.asMap().values.forEach { it.reset() }
     }
 }

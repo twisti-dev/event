@@ -1,5 +1,6 @@
 package dev.slne.event.eventminingcobble.listener
 
+import dev.slne.event.eventminingcobble.MiningCobbleEvent
 import dev.slne.event.eventminingcobble.manager.MiningManager
 import dev.slne.event.eventminingcobble.player.MiningPlayerManager
 import net.kyori.adventure.text.Component
@@ -9,6 +10,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.world.WorldSaveEvent
 
 object MiningListener : Listener {
 
@@ -34,5 +36,11 @@ object MiningListener : Listener {
 
             player.sendActionBar(Component.text("Cobble Mined: ${miningPlayer.getCobbleMined()}", NamedTextColor.GREEN))
         }
+    }
+
+    @EventHandler
+    fun playerSaveEvent(event: WorldSaveEvent) {
+        System.err.println("Saving...")
+        MiningCobbleEvent.instance.saveToConfig()
     }
 }
