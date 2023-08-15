@@ -1,15 +1,16 @@
 package dev.slne.event.eventminingcobble.manager
 
 import dev.slne.event.eventminingcobble.MiningCobbleEvent
-import dev.slne.event.eventminingcobble.bossbar.GlobalCobbleCountBossbar
+import dev.slne.event.eventminingcobble.decorations.GlobalCobbleCountBossbar
 import dev.slne.event.eventminingcobble.listener.MiningListener
 import dev.slne.event.eventminingcobble.messages.MessageManager
 import dev.slne.event.eventminingcobble.player.MiningPlayerManager
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 
 object MiningManager {
-    private const val EVENT_TIME_IN_SECONDS: Short = 3_600
+    const val EVENT_TIME_IN_SECONDS: Short = 3_600
     var bossbar: GlobalCobbleCountBossbar? = null
     private val plugin = MiningCobbleEvent.instance
     var running = false
@@ -48,6 +49,10 @@ object MiningManager {
 
         running = false
         val plugin = MiningCobbleEvent.instance
+
+        MiningPlayerManager.getSortedMiningPlayers().forEach {
+            plugin.componentLogger.info(Component.text("${it.getName()} mined ${it.getCobbleMined()} cobblestone", MessageManager.INFO))
+        }
 
         plugin.server.scheduler.cancelTask(taskID)
         HandlerList.unregisterAll(MiningListener)

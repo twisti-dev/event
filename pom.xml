@@ -52,7 +52,9 @@
                     </execution>
                     <execution>
                         <id>test-compile</id>
-                        <goals> <goal>test-compile</goal> </goals> <!-- You can skip the <goals> element
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals> <!-- You can skip the <goals> element
                     if you enable extensions for the plugin -->
                         <configuration>
                             <sourceDirs>
@@ -87,6 +89,9 @@
                                     <include>org.jetbrains.kotlin:*</include>
                                     <include>com.google.guava</include>
                                     <include>com.github.ben-manes.caffeine:*</include>
+                                    <include>com.github.retrooper.packetevents</include>
+                                    <include>io.github.retrooper.packetevents</include>
+                                    <iclude>com.github.megavexnetwork.scoreboard-library:*</iclude>
                                 </includes>
                             </artifactSet>
 
@@ -96,12 +101,26 @@
                                     <shadedPattern>dev.slne.event.eventminingcobble.libs.kotlin</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>com.google</pattern>
+                                    <pattern>com.google.common</pattern>
                                     <shadedPattern>dev.slne.event.eventminingcobble.libs.google</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.github.benmanes.caffeine</pattern>
                                     <shadedPattern>dev.slne.event.eventminingcobble.libs.caffeine</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.github.retrooper.packetevents</pattern>
+                                    <shadedPattern>dev.slne.event.eventminingcobble.libs.packetevents.api
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.github.retrooper.packetevents</pattern>
+                                    <shadedPattern>dev.slne.event.eventminingcobble.libs.packetevents.impl
+                                    </shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.megavex.scoreboardlibrary</pattern>
+                                    <shadedPattern>dev.slne.event.eventminingcobble.libs.scoreboard</shadedPattern>
                                 </relocation>
                             </relocations>
 
@@ -162,6 +181,14 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io/</url>
+        </repository>
+        <repository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -203,6 +230,41 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <version>3.1.8</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+            <artifactId>scoreboard-library-api</artifactId>
+            <version>2.0.0-RC11</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+            <artifactId>scoreboard-library-implementation</artifactId>
+            <version>2.0.0-RC11</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+            <artifactId>scoreboard-library-extra-kotlin</artifactId>
+            <version>2.0.0-RC11</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.megavexnetwork.scoreboard-library</groupId>
+            <artifactId>scoreboard-library-packetevents</artifactId>
+            <version>2.0.0-RC11</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.retrooper.packetevents</groupId>
+            <artifactId>spigot</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 

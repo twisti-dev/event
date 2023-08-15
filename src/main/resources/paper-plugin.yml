@@ -2,7 +2,7 @@ name: event-mining-cobble
 version: '${project.version}'
 main: dev.slne.event.eventminingcobble.MiningCobbleEvent
 api-version: '1.20'
-authors: [twisti]
+authors: [ twisti ]
 description: All players have to mine 500k cobble
 
 dependencies:
@@ -10,4 +10,29 @@ dependencies:
     CommandAPI:
       join-classpath: true
       required: true
+      load: BEFORE
+
+    ProtocolLib:
+      join-classpath: true
+      required: false
+      load: BEFORE
+    ProtocolSupport:
+      join-classpath: true
+      required: false
+      load: BEFORE
+    ViaVersion:
+      join-classpath: true
+      required: false
+      load: BEFORE
+    ViaBackwards:
+      join-classpath: true
+      required: false
+      load: BEFORE
+    ViaRewind:
+      join-classpath: true
+      required: false
+      load: BEFORE
+    Geyser-Spigot:
+      join-classpath: true
+      required: false
       load: BEFORE

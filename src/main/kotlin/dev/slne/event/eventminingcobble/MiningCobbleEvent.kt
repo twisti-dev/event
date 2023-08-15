@@ -1,23 +1,36 @@
 package dev.slne.event.eventminingcobble
 
-import dev.slne.event.eventminingcobble.bossbar.GlobalCobbleCountBossbar
+import com.github.retrooper.packetevents.PacketEvents
+import dev.slne.event.eventminingcobble.decorations.GlobalCobbleCountBossbar
 import dev.slne.event.eventminingcobble.command.EventStartCommand
+import dev.slne.event.eventminingcobble.decorations.ScoreBoard
 import dev.slne.event.eventminingcobble.listener.MiningListener
 import dev.slne.event.eventminingcobble.manager.MiningManager
 import dev.slne.event.eventminingcobble.player.MiningPlayer
 import dev.slne.event.eventminingcobble.player.MiningPlayerManager
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder
+import net.megavex.scoreboardlibrary.api.ScoreboardLibrary
+import org.bukkit.Bukkit
 import org.bukkit.configuration.serialization.ConfigurationSerialization
 import org.bukkit.plugin.java.JavaPlugin
 
 class MiningCobbleEvent : JavaPlugin() {
+    lateinit var scoreboardLibrary: ScoreboardLibrary
+
     override fun onLoad() {
         instance = this
 
         ConfigurationSerialization.registerClass(MiningPlayer::class.java)
 
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this))
+        PacketEvents.getAPI().load()
+
+
     }
 
     override fun onEnable() {
+        PacketEvents.getAPI().init()
+
         MiningPlayerManager
         EventStartCommand
 
@@ -25,10 +38,19 @@ class MiningCobbleEvent : JavaPlugin() {
         if (config.getBoolean("isRunning", false)) {
             continueFromConfig()
         }
+
+        Bukkit.getScheduler().runTask(this, Runnable {
+            scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(this)
+            ScoreBoard(this)
+        })
     }
 
     override fun onDisable() {
+        PacketEvents.getAPI().terminate()
+
         saveToConfig()
+
+        scoreboardLibrary.close()
     }
 
     fun saveToConfig() {
