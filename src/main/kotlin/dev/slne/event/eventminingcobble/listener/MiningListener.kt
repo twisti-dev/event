@@ -40,7 +40,6 @@ object MiningListener : Listener {
 
     @EventHandler
     fun playerSaveEvent(event: WorldSaveEvent) {
-        System.err.println("Saving...")
         MiningCobbleEvent.instance.saveToConfig()
     }
 }
