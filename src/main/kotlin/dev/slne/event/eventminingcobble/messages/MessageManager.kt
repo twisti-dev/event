@@ -5,6 +5,7 @@ import dev.slne.event.eventminingcobble.player.MiningPlayerManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextColor
+import org.bukkit.OfflinePlayer
 
 
 object MessageManager {
@@ -84,22 +85,54 @@ object MessageManager {
                     .append(line)
                     .append(
                         Component.text("Platz 1: ", SECONDARY)
-                            .append(Component.text(first?.let { "${it.getName()} (${it.getCobbleMined()})" }?:"__EMPTY__", VARIABLE_VALUE))
+                            .append(Component.text(first?.let { "${it.getName()} (${it.getCobbleMined()})" }
+                                ?: "__EMPTY__", VARIABLE_VALUE))
                             .append(line)
                             .append(Component.text("Platz 2: ", SECONDARY))
-                            .append(Component.text(second?.let { "${it.getName()} (${it.getCobbleMined()})" }?:"__EMPTY__", VARIABLE_VALUE))
+                            .append(Component.text(second?.let { "${it.getName()} (${it.getCobbleMined()})" }
+                                ?: "__EMPTY__", VARIABLE_VALUE))
                             .append(line)
                             .append(Component.text("Platz 3: ", SECONDARY))
-                            .append(Component.text(third?.let { "${it.getName()} (${it.getCobbleMined()})" }?:"__EMPTY__", VARIABLE_VALUE))
+                            .append(Component.text(third?.let { "${it.getName()} (${it.getCobbleMined()})" }
+                                ?: "__EMPTY__", VARIABLE_VALUE))
                     )
             )
             .append(line)
             .append(line)
             .append(Component.text("Vielen Dank fürs Mitmachen!", SUCCESS))
             .append(line)
-            .append(Component.text("Es wurden ", INFO)
-                .append(Component.text("${MiningPlayerManager.getGlobalCobbleMined()} / 500.000", VARIABLE_VALUE))
-                .append(Component.text(" Cobble abgebaut!", INFO))
+            .append(
+                Component.text("Es wurden ", INFO)
+                    .append(Component.text("${MiningPlayerManager.getGlobalCobbleMined()} / 500.000", VARIABLE_VALUE))
+                    .append(Component.text(" Cobble abgebaut!", INFO))
             )
+    }
+
+    fun showGlobalCobbleMined(): Component {
+        return prefix
+            .append(
+                Component.text("Es wurden ", INFO)
+                    .append(Component.text("${MiningPlayerManager.getGlobalCobbleMined()} / 500.000", VARIABLE_VALUE))
+                    .append(Component.text(" Cobble abgebaut!", INFO))
+            )
+    }
+
+    fun noMiningPlayerFound(offlinePlayer: OfflinePlayer) : Component{
+        val builder = Component.text()
+
+        builder.append(prefix)
+        builder.append(Component.text("Der Spieler ", ERROR))
+        offlinePlayer.name?.let { builder.append(Component.text(it, VARIABLE_VALUE)) }
+        builder.append(Component.text(" wurde nicht gefunden!", ERROR))
+
+        return builder.build()
+    }
+
+    fun showPlayerCobbleMined(player: MiningPlayer): Component {
+        return prefix
+            .append(Component.text(player.getName(), VARIABLE_KEY))
+            .append(Component.text(" hat ", INFO))
+            .append(Component.text("${player.getCobbleMined()} / 500.000", VARIABLE_VALUE))
+            .append(Component.text(" Cobble abgebaut!", INFO))
     }
 }

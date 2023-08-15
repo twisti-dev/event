@@ -16,6 +16,10 @@ object MiningPlayerManager {
         return miningPlayerCache.get(uuid)
     }
 
+    fun getMiningPlayerIfPresent(uuid: UUID): MiningPlayer? {
+        return miningPlayerCache.getIfPresent(uuid)
+    }
+
     fun getGlobalCobbleMined(): Int {
         return globalCobbleMined.get()
     }
