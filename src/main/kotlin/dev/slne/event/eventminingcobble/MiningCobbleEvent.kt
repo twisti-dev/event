@@ -41,10 +41,8 @@ class MiningCobbleEvent : JavaPlugin() {
             continueFromConfig()
         }
 
-        Bukkit.getScheduler().runTask(this, Runnable {
-            scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(this)
-            scoreBoard = ScoreBoard(this)
-        })
+        scoreboardLibrary = ScoreboardLibrary.loadScoreboardLibrary(this)
+        scoreBoard = ScoreBoard(this)
     }
 
     override fun onDisable() {

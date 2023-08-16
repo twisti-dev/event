@@ -12,7 +12,6 @@ import org.bukkit.OfflinePlayer
 object EventStartCommand {
     init {
         commandTree("cobbleEvent") {
-            withPermission("cobbleEvent.start")
 
             literalArgument("count") {
                 executes(CommandExecutor { sender, _ ->
