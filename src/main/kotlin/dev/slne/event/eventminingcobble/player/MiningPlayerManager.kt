@@ -29,7 +29,7 @@ object MiningPlayerManager {
     }
 
     fun getSortedMiningPlayers(): List<MiningPlayer> {
-        return miningPlayerCache.asMap().values.sorted()
+        return miningPlayerCache.asMap().values.sorted().reversed()
     }
 
     fun reset() {

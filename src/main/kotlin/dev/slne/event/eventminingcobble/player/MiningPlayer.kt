@@ -50,7 +50,7 @@ class MiningPlayer(
         if (compared == 0) {
             return this.getName().compareTo(other.getName())
         }
-        return -compared
+        return compared
     }
 
     /**
