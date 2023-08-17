@@ -52,6 +52,7 @@ class ScoreBoard(
             titleAnimation.nextFrame()
             spaceLine.nextFrame()
             sidebarLayout.apply(sidebar)
+            sidebar.addPlayers(Bukkit.getOnlinePlayers())
         }, 0, 5)
 
     }
